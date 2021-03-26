@@ -1,9 +1,13 @@
 package it.polito.tdp.spellchecker;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 
 import it.polito.tdp.spellchecker.model.Dictionary;
+import it.polito.tdp.spellchecker.model.RichWord;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -42,16 +46,66 @@ public class FXMLController {
     	txtTesto.setText("");
     	txtErrori.setText("");
     	
-    	
 
     }
 
     @FXML
     void HandleSpellCheck(ActionEvent event) {
     	
-    	String testoInserito=txtTesto.getText().toLowerCase().replaceAll("[.,\\/$%\\*;:{}=\\-_'~()\\[\\]\"]", "");
+    	
+    	txtErrori.setText("");
+    	
+    	ArrayList<String> inputTextList=new ArrayList<String>();
+    	
+    	if(lingua.getValue()==null) {
+    		txtErrori.setText("Inserisci una lingua");
+    		return;
+    	}
+    	
+    	//carico il diizonario 
+    	
+    	if(!model.loadDictionary(lingua.getValue())) {
+    		txtErrori.setText("Errore nel caricamento del dizionario");
+    		return;
+    	}
+    	
+    	String testoInserito=txtTesto.getText().toLowerCase().replaceAll("[.,\\/#!$%\\^&\\*;:{}=\\-_'~()\\[\\]\"]", "");
+    	
+        if(testoInserito.isEmpty()) {
+        	txtErrori.setText("Inserire un testo da correggere");
+        	return;
+        }
+        
+        StringTokenizer st= new StringTokenizer(testoInserito, " ");
+        while(st.hasMoreTokens())
+        {
+        	inputTextList.add(st.nextToken());
+        }
+        
+        long start=System.nanoTime();
+        
+        List<RichWord> outputTextList;
+        
+        outputTextList=model.spellCheckText(inputTextList);
+        
+        long stop=System.nanoTime();
+        
+       
+        
+        //gestione errori
+        
+        		
+        int numeroErrori=0;
+        
+        
+        txtTempo.setText("Spell check completato in "+ (stop-start)/1E9 +" secondi ");
+        
+        
+       
+    	
+    	
+    	
     
-    	System.out.println(testoInserito);
     	
     	
   
@@ -70,7 +124,11 @@ public class FXMLController {
     }
     
     public void setModel(Dictionary model2) {
+    	
     	this.model=model2;
+    	
+    	//anche i bottoni dovrei disattivarli
+    	
     	lingua.getItems().addAll("English", "Italian");
     	
     }
