@@ -4,8 +4,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.StringTokenizer;
-
 import it.polito.tdp.spellchecker.model.Dictionary;
 import it.polito.tdp.spellchecker.model.RichWord;
 import javafx.event.ActionEvent;
@@ -44,25 +42,21 @@ public class FXMLController {
     void HandleClear(ActionEvent event) {
     	
     	txtTesto.setText("");
-    	txtErrori.setText("");
-    	
+    	txtErrori.setText("");	
 
     }
 
     @FXML
     void HandleSpellCheck(ActionEvent event) {
     	
-    	
     	txtErrori.setText("");
-    	
-    	ArrayList<String> inputTextList=new ArrayList<String>();
     	
     	if(lingua.getValue()==null) {
     		txtErrori.setText("Inserisci una lingua");
     		return;
     	}
     	
-    	//carico il diizonario 
+    	//carico il dizionario 
     	
     	if(!model.loadDictionary(lingua.getValue())) {
     		txtErrori.setText("Errore nel caricamento del dizionario");
@@ -71,44 +65,43 @@ public class FXMLController {
     	
     	String testoInserito=txtTesto.getText().toLowerCase().replaceAll("[.,\\/#!$%\\^&\\*;:{}=\\-_'~()\\[\\]\"]", "");
     	
+    	ArrayList<String> inputTextList=new ArrayList<String>();
+    	
         if(testoInserito.isEmpty()) {
         	txtErrori.setText("Inserire un testo da correggere");
         	return;
         }
         
-        StringTokenizer st= new StringTokenizer(testoInserito, " ");
-        while(st.hasMoreTokens())
-        {
-        	inputTextList.add(st.nextToken());
+        String arrayParole[]= testoInserito.split(" ");
+      
+        for(int i=0; i<arrayParole.length; i++) {
+        	inputTextList.add(arrayParole[i]);
         }
+       
+        
+       ArrayList<RichWord> outputTextList = new ArrayList<RichWord>();
         
         long start=System.nanoTime();
         
-        List<RichWord> outputTextList;
-        
         outputTextList=model.spellCheckText(inputTextList);
+        //outputTextList=model.spellCheckTextLinear(inputTextList);
+        //outputTextList=model.spellCheckTextDichotomic(InputTextList);
         
         long stop=System.nanoTime();
         
-       
-        
         //gestione errori
-        
-        		
+       	
         int numeroErrori=0;
+        String stampa="";
         
+        for(RichWord rw: outputTextList) {
+        	numeroErrori++;
+        	stampa+=rw.getWord()+"\n";
+        }
         
+        txtErrori.setText(stampa);
         txtTempo.setText("Spell check completato in "+ (stop-start)/1E9 +" secondi ");
-        
-        
-       
-    	
-    	
-    	
-    
-    	
-    	
-  
+        txtRisultatoConErrori.setText("Il testo contiene: "+numeroErrori+" errori");
     	
 
     }

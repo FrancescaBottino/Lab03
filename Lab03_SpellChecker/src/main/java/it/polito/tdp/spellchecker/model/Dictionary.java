@@ -53,10 +53,10 @@ public class Dictionary {
 			if(dizionario.contains(s.toLowerCase())) //se è contenuta, è corretta
 				rw.setCorrect(true);
 			else
-				rw.setCorrect(false);
-			
-			
-			parole.add(rw);
+				{
+				  rw.setCorrect(false);
+				  parole.add(rw);
+				}
 		}
 		
 		return parole;
@@ -66,7 +66,7 @@ public class Dictionary {
 	
 	//altro modo per trovare, ALTERNATIVA A CONTAINS, metodo lineare
 	
-	public List<RichWord> spellCheckTextLinear(List<String> inputTextList){
+	public ArrayList<RichWord> spellCheckTextLinear(ArrayList<String> inputTextList){
 		
 		ArrayList<RichWord> parole= new ArrayList<RichWord>();
 		
@@ -87,9 +87,10 @@ public class Dictionary {
 			if(found==true)
 				rw.setCorrect(true);
 			else 
-				rw.setCorrect(false);
-			
-			parole.add(rw);
+				{
+				  rw.setCorrect(false);
+				  parole.add(rw);
+				}
 				
 			
 		}
@@ -99,9 +100,9 @@ public class Dictionary {
 	}
 	
 	
-	public List<RichWord> spellChceckTextDichotomic(List<String> inputTextList){
+	public ArrayList<RichWord> spellCheckTextDichotomic(List<String> inputTextList){
 		
-		List<RichWord> parole= new ArrayList<RichWord>();
+		ArrayList<RichWord> parole= new ArrayList<RichWord>();
 		
 		for(String s: inputTextList) {
 			RichWord rw= new RichWord(s);
@@ -110,9 +111,9 @@ public class Dictionary {
 				rw.setCorrect(true);
 			}
 			else
-				rw.setCorrect(false);
-			
-			parole.add(rw);
+				{ rw.setCorrect(false);
+				  parole.add(rw);
+				}
 			
 			
 		}
